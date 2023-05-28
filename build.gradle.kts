@@ -29,6 +29,9 @@ sourceSets {
     }
 }
 
+tasks.withType<Jar>() {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
 
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
