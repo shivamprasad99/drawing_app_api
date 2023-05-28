@@ -4,14 +4,25 @@ import kotlinx.serialization.Serializable
 import java.util.*
 
 
-val wordCollection = listOf(
-    "apple", "banana", "orange", "grape", "pineapple", "mango", "pear", "kiwi",
-    "cherry", "watermelon", "strawberry", "blueberry", "lemon", "peach", "plum"
-)
+val lazyWordsList: List<String> by lazy {
+    val stringList = mutableListOf<String>()
+
+    val inputStream = object {}.javaClass.getResourceAsStream("/words_list.csv")
+    inputStream?.reader().use { reader ->
+        reader?.forEachLine { line ->
+            val columns = line.split(",").map { it.trim() }
+            if (columns.isNotEmpty()) {
+                stringList.add(columns[0])
+            }
+        }
+    }
+
+    stringList
+}
 
 fun getRandomWords(): List<String> {
     val random = Random()
-    return wordCollection.shuffled(random).take(4)
+    return lazyWordsList.shuffled(random).take(4)
 }
 
 @Serializable
