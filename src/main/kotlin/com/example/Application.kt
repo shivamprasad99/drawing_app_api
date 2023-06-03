@@ -6,6 +6,7 @@ import io.ktor.server.netty.*
 import com.example.plugins.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.websocket.*
 import kotlinx.serialization.json.Json
 
 fun main() {
@@ -20,5 +21,6 @@ fun Application.module() {
             isLenient = true
         })
     }
+    install(WebSockets)
     configureRouting()
 }
