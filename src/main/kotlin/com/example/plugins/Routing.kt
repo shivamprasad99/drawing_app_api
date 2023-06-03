@@ -34,9 +34,12 @@ fun Application.configureRouting() {
         }
         post("/add_user_to_room") {
             val parameters = call.receiveParameters()
-            GamesManager.addUserToRoom(parameters["room_id"], parameters["user_id"])
+            if(GamesManager.addUserToRoom(parameters["room_id"], parameters["user_id"])) {
+                call.respond(HttpStatusCode.OK, "User added to room successfully")
+            } else {
+                call.respond(HttpStatusCode.OK, "failed")
+            }
             // Process the received roomId and userId as needed
-            call.respond(HttpStatusCode.OK, "User added to room successfully")
         }
     }
 }

@@ -7,12 +7,14 @@ object GamesManager {
         }
     }
 
-    fun addUserToRoom(roomId: String?, userId: String?) {
+    fun addUserToRoom(roomId: String?, userId: String?): Boolean {
         if(roomId != null && gamesMap.containsKey(roomId)) {
             if(userId != null && gamesMap[roomId]!=null && !gamesMap[roomId]!!.hasUser(userId)) {
                 gamesMap[roomId]?.addUser(User(userId,0))
+                return true
             }
         }
+        return false
     }
 
     // maps a roomId to the room which contains data about a game
