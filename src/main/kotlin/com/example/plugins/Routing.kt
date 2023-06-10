@@ -59,6 +59,7 @@ fun Application.configureRouting() {
                         connectionUserId = connectionUserId ?: data.user_id
                         GamesManager.addWsConnection(data.room_id, data.user_id, this)
                         GamesManager.broadcastMessage(data.room_id, data.user_id, data.message)
+                        send(Frame.Text("Hi, $receivedText!"))
                     } else if(frame is Frame.Close) {
                         GamesManager.closeWsConnection(connectionRoomId, connectionUserId)
                     }
