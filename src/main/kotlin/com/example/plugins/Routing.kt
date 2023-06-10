@@ -1,9 +1,6 @@
 package com.example.plugins
 
-import com.example.GamesManager
-import com.example.RandomWordsResponse
-import com.example.generateRoomId
-import com.example.getRandomWords
+import com.example.*
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
@@ -11,6 +8,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.serialization.json.Json.Default.decodeFromString
 
 fun Application.configureRouting() {
     routing {
@@ -48,6 +46,28 @@ fun Application.configureRouting() {
             }
             // Process the received roomId and userId as needed
         }
+
+        webSocket("/websocket") {
+            try {
+                var connectionRoomId: String? = null
+                var connectionUserId: String? = null
+                for(frame in incoming) {
+                    if(frame is Frame.Text) {
+                        val receivedText = frame.readText()
+                        val data = decodeFromString(MessageData.serializer(), receivedText)
+                        connectionRoomId = connectionRoomId ?: data.room_id
+                        connectionUserId = connectionUserId ?: data.user_id
+                        GamesManager.addWsConnection(data.room_id, data.user_id, this)
+                        GamesManager.broadcastMessage(data.room_id, data.user_id, data.message)
+                    } else if(frame is Frame.Close) {
+                        GamesManager.closeWsConnection(connectionRoomId, connectionUserId)
+                    }
+                }
+            } catch (e: Exception) {
+                println(e)
+            }
+        }
+
 
         webSocket("/echo") {
             send("Please enter your name")
