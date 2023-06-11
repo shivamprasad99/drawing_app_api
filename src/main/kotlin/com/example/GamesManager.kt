@@ -21,7 +21,7 @@ object GamesManager {
 
     fun addWsConnection(roomId: String?, userId: String?, defaultWebSocketServerSession: DefaultWebSocketServerSession) {
         if(roomId != null && gamesMap.containsKey(roomId)) {
-            if(userId != null && gamesMap[roomId]!=null && !gamesMap[roomId]!!.hasUser(userId)) {
+            if(userId != null && gamesMap[roomId]!=null && gamesMap[roomId]!!.hasUser(userId)) {
                 gamesMap[roomId]?.addWsConnection(userId, defaultWebSocketServerSession)
             }
         }
@@ -29,7 +29,7 @@ object GamesManager {
 
     fun broadcastMessage(roomId: String?, userId: String?, message: String?) {
         if(roomId != null && gamesMap.containsKey(roomId)) {
-            if(userId != null && gamesMap[roomId]!=null && !gamesMap[roomId]!!.hasUser(userId)) {
+            if(userId != null && gamesMap[roomId]!=null && gamesMap[roomId]!!.hasUser(userId)) {
                 gamesMap[roomId]?.broadcastMessage(userId, message)
             }
         }

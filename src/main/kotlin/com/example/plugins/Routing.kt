@@ -39,6 +39,7 @@ fun Application.configureRouting() {
 
         post("/add_user_to_room") {
             val parameters = call.receiveParameters()
+            println(parameters)
             if(GamesManager.addUserToRoom(parameters["room_id"], parameters["user_id"])) {
                 call.respond(HttpStatusCode.OK, "User added to room successfully")
             } else {
@@ -59,7 +60,6 @@ fun Application.configureRouting() {
                         connectionUserId = connectionUserId ?: data.user_id
                         GamesManager.addWsConnection(data.room_id, data.user_id, this)
                         GamesManager.broadcastMessage(data.room_id, data.user_id, data.message)
-                        send(Frame.Text("Hi, $receivedText!"))
                     } else if(frame is Frame.Close) {
                         GamesManager.closeWsConnection(connectionRoomId, connectionUserId)
                     }
@@ -84,4 +84,6 @@ fun Application.configureRouting() {
         }
     }
 }
+
+
 
