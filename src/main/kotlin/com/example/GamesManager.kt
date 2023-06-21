@@ -43,6 +43,10 @@ object GamesManager {
         }
     }
 
+    fun broadcastImage(imageData: String?, defaultWebSocketServerSession: DefaultWebSocketServerSession) {
+
+    }
+
     // maps a roomId to the room which contains data about a game
     val gamesMap: MutableMap<String,Room> = HashMap()
 }

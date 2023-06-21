@@ -9,6 +9,12 @@ import io.ktor.server.request.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.serialization.json.Json.Default.decodeFromString
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.util.Base64
+import java.nio.file.Paths
+
 
 fun Application.configureRouting() {
     routing {
@@ -82,6 +88,36 @@ fun Application.configureRouting() {
                 }
             }
         }
+
+        webSocket("/image") {
+            try {
+                val outputStream = ByteArrayOutputStream()
+
+                for (frame in incoming) {
+                    println(frame.frameType)
+                    if (frame is Frame.Binary) {
+                        outputStream.write(frame.readBytes())
+
+                        // Process the received imageBytes
+                        val imageBytes = outputStream.toByteArray()
+                        // ...
+                        // Save the image to disk
+//                        val imageFile = File("/home/shivam/Documents/image.jpg")
+//                        imageFile.writeBytes(imageBytes)
+
+                        // Broadcast the image to other active connections
+                        val imageData = Base64.getEncoder().encodeToString(imageBytes)
+                        GamesManager.broadcastImage(imageData, this)
+
+                        // Clear the output stream
+                        outputStream.reset()
+                    }
+                }
+            } catch (e: Exception) {
+                println(e)
+            }
+        }
+
     }
 }
 
