@@ -8,6 +8,8 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -77,7 +79,17 @@ fun Application.configureRouting() {
 
 
         webSocket("/echo") {
-            send("Please enter your name")
+            launch {
+                var counter = 0
+                while (true) {
+                    // Wait for 1 second
+                    delay(1000)
+                    // Send a message at the interval
+                    send(Frame.Text("Tick tick $counter"))
+                    counter++
+                }
+            }
+
             for (frame in incoming) {
                 frame as? Frame.Text ?: continue
                 val receivedText = frame.readText()
