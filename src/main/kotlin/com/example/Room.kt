@@ -35,14 +35,14 @@ class Room(val id: String) {
     fun broadcastMessage(userId: String, message: String?) {
         val messageJson = encodeToString(MessageData.serializer(), MessageData(user_id = userId, room_id = id, message = message))
         connections.forEach {
-            if(it.key != userId) {
+//            if(it.key != userId) {
                 val connection = it.value
                 if (connection.isActive) {
                     CoroutineScope(Dispatchers.IO).launch {
                         connection.send(Frame.Text(messageJson))
                     }
                 }
-            }
+//            }
         }
     }
 
